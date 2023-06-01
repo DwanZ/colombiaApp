@@ -51,3 +51,4 @@ dependencies {
     implementation(libs.bundles.feature.module)
     implementation(libs.bundles.base.module)
 }
+
