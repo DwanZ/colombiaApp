@@ -22,7 +22,7 @@ allprojects {
     }
     tasks.register<Copy>("installGitHook") {
         from(File(rootProject.rootDir, "pre-commit"))
-        into(File(rootProject.rootDir, ".git/hooks"))
+        into(File(rootProject.rootDir, ".git/hooks/"))
         fileMode = 777
     }
 

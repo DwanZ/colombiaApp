@@ -11,10 +11,14 @@ fun AttractionScreen() {
     Column(   Modifier.fillMaxSize()) {
 
     }
+    //
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun AttractionPreview()  {
     AttractionScreen()
+
 }
+
