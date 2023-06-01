@@ -15,6 +15,6 @@ fun AttractionScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun AttractionPreview(){
+fun AttractionPreview()  {
     AttractionScreen()
 }
