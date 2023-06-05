@@ -8,17 +8,19 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AttractionScreen() {
-    Column(   Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize()) {
 
     }
     //
+
 
 }
 
 @Preview(showBackground = true)
 @Composable
-fun AttractionPreview()  {
+fun AttractionPreview() {
     AttractionScreen()
 
 }
+
 

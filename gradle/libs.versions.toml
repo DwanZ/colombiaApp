@@ -25,6 +25,7 @@ okhttp = "4.9.0"
 guava = "31.1-android"
 coil = "2.0.0"
 ktlint = "11.3.2"
+jacoco = "0.8.10"
 
 [libraries]
 # Compose
@@ -57,6 +58,7 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 ktlint = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 
 
+
 [bundles]
 # Define bundles/groups of libraries
 base-module = ["jUnit", "jUnitExt"]
@@ -71,3 +73,5 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android_gradle_plugin = { id = "com.android.tools.build:gradle", version.ref = "android_gradle_version" }
 kotlin_gradle_plugin = { id = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 library = { id = "com.android.library" }
+#jacoco = { group = "org.jacoco", id = "org.jacoco.core", version.ref = "jacoco" }
+jacoco = { id = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
