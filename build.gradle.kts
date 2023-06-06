@@ -1,11 +1,18 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application") version "8.0.1" apply false
-    id("com.android.library") version "8.0.1" apply false
+    id("com.android.application") version "8.0.2" apply false
+    id("com.android.library") version "8.0.2" apply false
     id("org.jetbrains.kotlin.android") version "1.8.21" apply false
     id("com.google.dagger.hilt.android") version "2.44" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
     jacoco
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
 }
 
 buildscript {
@@ -16,7 +23,6 @@ buildscript {
     }
 }
 allprojects {
-    //plugins.apply("$project.rootDir/jacoco.gradle.kts")
     repositories {
         google()
         mavenCentral()
@@ -27,7 +33,6 @@ allprojects {
         into(File(rootProject.rootDir, ".git/hooks/"))
         fileMode = 777
     }
-
     tasks.getByPath(":app:preBuild").dependsOn("installGitHook")
 }
 
@@ -41,9 +46,9 @@ ktlint {
     ignoreFailures.set(false)
     enableExperimentalRules.set(false)
     reporters {
-        /*reporter(ReporterType.CHECKSTYLE)
+        reporter(ReporterType.CHECKSTYLE)
         reporter(ReporterType.JSON)
-        reporter(ReporterType.HTML)*/
+        reporter(ReporterType.HTML)
     }
     filter {
         exclude("**/style-violations.kt")

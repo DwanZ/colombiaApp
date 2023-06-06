@@ -2,7 +2,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    //apply(from = "../jacoco.gradle.kts")
     jacoco
 }
 
@@ -13,7 +12,6 @@ android {
     defaultConfig {
         applicationId = "com.dwan.colombia"
         minSdk = 25
-        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -24,21 +22,25 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = true // Enables code shrinking for the release build type.
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"
             )
         }
-        getByName("debug") {
+        debug {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
         }
+
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildFeatures {
         compose = true
@@ -46,7 +48,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.7"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

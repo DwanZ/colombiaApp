@@ -1,7 +1,7 @@
 [versions]
 # Define the dependency versions
 kotlin = "1.8.21"
-android_gradle_version = "8.0.1"
+android_gradle_version = "8.0.2"
 compose = "1.4.2"
 compose_compiler = "1.4.7"
 compose_bom = "2023.05.01"
@@ -74,4 +74,4 @@ android_gradle_plugin = { id = "com.android.tools.build:gradle", version.ref = "
 kotlin_gradle_plugin = { id = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 library = { id = "com.android.library" }
 #jacoco = { group = "org.jacoco", id = "org.jacoco.core", version.ref = "jacoco" }
-jacoco = { id = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
+#jacoco = { id = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
