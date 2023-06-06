@@ -1,8 +1,7 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    jacoco
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin)
 }
 
 android {
@@ -23,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true // Enables code shrinking for the release build type.
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"
@@ -33,7 +32,6 @@ android {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
         }
-
     }
     compileOptions {
         kotlinOptions {
