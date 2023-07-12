@@ -4,9 +4,10 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.org.jetbrains.kotlin.kapt) apply false
     alias(libs.plugins.kotlin) apply false
-    alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.hilt.plugin) apply false
     jacoco
 }
 
@@ -56,5 +57,3 @@ ktlint {
         include("**/kotlin/**")
     }
 }
-
-

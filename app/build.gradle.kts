@@ -2,6 +2,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.hilt.plugin)
 }
 
 android {
@@ -35,10 +37,10 @@ android {
     }
     compileOptions {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = JavaVersion.VERSION_17.toString()
         }
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -49,7 +51,11 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/gradle/incremental.annotation.processors"
         }
+    }
+    kapt {
+        correctErrorTypes = true
     }
 }
 
@@ -57,5 +63,11 @@ dependencies {
     implementation(libs.activity.ktx.lib)
     implementation(libs.bundles.feature.module)
     implementation(libs.bundles.base.module)
+    implementation(libs.hilt.plugin)
+    kapt(libs.android.hilt.compiler)
+    kapt(libs.hilt.dagger.compiler)
+    implementation(project(mapOf("path" to ":domain")))
+    implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":common")))
 }
 

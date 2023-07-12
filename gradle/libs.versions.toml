@@ -1,6 +1,7 @@
 [versions]
 # Define the dependency versions
 kotlin = "1.8.21"
+org-jetbrains-kotlin-android = "1.8.21"
 android_gradle_version = "8.0.2"
 compose = "1.4.2"
 compose_compiler = "1.4.7"
@@ -21,11 +22,16 @@ corektx = "1.10.1"
 tooling = "1.0.0-rc01"
 retrofit = "2.9.0"
 hilt = "2.44"
+hilt_compiler = "1.0.0"
+hilt_google_compiler = "2.46"
+hilt_nav_compose = "1.0.0"
+hilt_viewmodel = "1.0.0-alpha03"
 okhttp = "4.9.0"
 guava = "31.1-android"
 coil = "2.0.0"
 ktlint = "11.3.2"
 jacoco = "0.8.8"
+accompanist = "0.31.5-beta"
 
 [libraries]
 # Compose
@@ -39,12 +45,18 @@ compose_activity = { module = "androidx.activity:activity-compose", version.ref 
 androidx_material = { module = "androidx.compose.material:material", version.ref = "material" }
 compose_material3 = { module = "androidx.compose.material3:material3", version.ref = "compose_material3" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+accompanist = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 #Core
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx_core = { module = "androidx.core:core", version.ref = "core" }
 androidx_corektx = { module = "androidx.core:core-ktx", version.ref = "corektx" }
 activity_ktx_lib = { module = "androidx.activity:activity-ktx", version.ref = "activity_ktx_version" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt_navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt_nav_compose" }
+hilt_viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hilt_viewmodel" }
+hilt_dagger_compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt_google_compiler" }
+android_hilt_compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt_compiler" }
+hilt-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt_google_compiler" }
 #Testing
 jUnit = { module = "junit:junit", version.ref = "jUnit_version" }
 jUnitExt = { module = "androidx.test.ext:junit", version.ref = "jUnitExt_version" }
@@ -64,14 +76,17 @@ ktlint = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlin
 base-module = ["jUnit", "jUnitExt"]
 business-module = ["hilt"]
 data-module = ["retrofit", "gson", "hilt", "okhttp", "interceptor", "guava"]
+common-module = ["compose_bom", "compose_ui", "compose_tooling", "compose_toolingpreview", "androidx_material", "compose_material3"]
 feature-module = ["compose_bom", "compose_ui", "compose_tooling", "compose_toolingpreview", "compose_navigation",
-    "compose_viewmodel", "compose_activity", "androidx_material", "compose_material3", "coil", "hilt"]
+    "compose_viewmodel", "compose_activity", "androidx_material", "compose_material3", "coil",
+    "hilt", "hilt_navigation","accompanist"]
 
 
 [plugins]
 android_application = { id = "com.android.application", version.ref = "android_gradle_version" }
 android_library = { id = "com.android.library", version.ref = "android_gradle_version" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 jacoco = { id = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
+org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "org-jetbrains-kotlin-android" }
+hilt_plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

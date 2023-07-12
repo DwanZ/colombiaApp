@@ -2,6 +2,7 @@ package com.dwan.data.source.remote
 
 import com.dwan.domain.model.CountryModel
 
+
 data class CountryEntity(
     val aircraftPrefix: String,
     val borders: List<String>,

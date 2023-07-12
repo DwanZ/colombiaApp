@@ -5,8 +5,11 @@ import com.dwan.data.network.ColombiaApi
 import com.dwan.data.source.CountryDataSource
 import com.dwan.data.source.remote.CountryEntity
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class CountryRemoteDataSource @Inject constructor(private val api: ColombiaApi) : CountryDataSource {
+@Singleton
+class CountryRemoteDataSource @Inject constructor(private val api: ColombiaApi) :
+    CountryDataSource {
 
     override suspend fun getCountry(): Either<Exception, CountryEntity> =
         try {

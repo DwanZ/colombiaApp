@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
 }
 
 android {
@@ -24,22 +25,25 @@ android {
             )
         }
         debug {
-            enableUnitTestCoverage = false
-            enableAndroidTestCoverage = false
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
     }
     compileOptions {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = JavaVersion.VERSION_17.toString()
         }
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     implementation(libs.bundles.data.module)
     implementation(libs.bundles.base.module)
-    implementation(project(mapOf("path" to ":domain")))
+    implementation(libs.hilt.plugin)
+    kapt(libs.android.hilt.compiler)
+    kapt(libs.hilt.dagger.compiler)
     implementation(project(mapOf("path" to ":common")))
+    implementation(project(mapOf("path" to ":domain")))
 }
