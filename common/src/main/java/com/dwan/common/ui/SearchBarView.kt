@@ -3,6 +3,7 @@ package com.dwan.common.ui
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,13 +17,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(onSearch: (String) -> Unit) {
+fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -32,13 +34,15 @@ fun SearchBar(onSearch: (String) -> Unit) {
         onValueChange = { text = it },
         label = { Text("Search") },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.White,
+            unfocusedIndicatorColor = Color.White,
+        focusedIndicatorColor =  Color.Transparent),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = {
             onSearch(text)
-            // Hide the keyboard after submitting the search
             keyboardController?.hide()
-            //or hide keyboard
             focusManager.clearFocus()
 
         })

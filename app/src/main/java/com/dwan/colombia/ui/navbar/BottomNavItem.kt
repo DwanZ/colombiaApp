@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.dwan.colombia.R
 import com.dwan.colombia.ui.screen.attraction.AttractionScreen
+import com.dwan.colombia.ui.screen.attraction.detail.AttractionDetailScreen
 import com.dwan.colombia.ui.screen.country.CountryScreen
 import com.dwan.colombia.ui.screen.president.PresidentScreen
 import com.dwan.colombia.ui.screen.president.detail.PresidentDetailScreen
@@ -26,13 +27,18 @@ sealed class BottomNavItem(var title: String, var icon: Int, var screen_route: S
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(
+    navController: NavHostController,
+    startTrip: (String) -> Unit
+) {
     NavHost(navController, startDestination = BottomNavItem.Country.screen_route) {
         composable(BottomNavItem.Country.screen_route) {
             CountryScreen()
         }
         composable(BottomNavItem.Attractions.screen_route) {
-            AttractionScreen()
+            AttractionScreen() { id ->
+                navController.navigate("attractionDetail/$id")
+            }
         }
         composable(BottomNavItem.Presidents.screen_route) {
             PresidentScreen() { id ->
@@ -40,6 +46,8 @@ fun NavigationGraph(navController: NavHostController) {
             }
         }
         presidentDetailGraph(navController)
+
+        attractionDetailGraph(navController, startTrip)
     }
 }
 
@@ -49,7 +57,6 @@ fun NavGraphBuilder.presidentDetailGraph(navController: NavHostController) {
         "presidentDetail/{id}",
         arguments = listOf(navArgument("id") { type = NavType.IntType }),
         enterTransition = {
-            // Let's make for a really long fade in
             slideInVertically(
                 initialOffsetY = { 1800 }
             )
@@ -62,3 +69,26 @@ fun NavGraphBuilder.presidentDetailGraph(navController: NavHostController) {
         PresidentDetailScreen(navController)
     }
 }
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.attractionDetailGraph(
+    navController: NavHostController,
+    startTrip: (String) -> Unit
+) {
+    composable(
+        "attractionDetail/{id}",
+        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+        enterTransition = {
+            slideInVertically(
+                initialOffsetY = { 1800 }
+            )
+        }, popExitTransition = {
+            slideOutVertically(
+                targetOffsetY = { 1800 }
+            )
+        }
+    ) {
+        AttractionDetailScreen(navController, startTrip = startTrip)
+    }
+}
+

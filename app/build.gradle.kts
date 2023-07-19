@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dwan.colombia"
-        minSdk = 25
+        minSdk = 26
         versionCode = 1
         versionName = "1.0"
 

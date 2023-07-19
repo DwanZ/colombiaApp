@@ -77,9 +77,9 @@ fun CountryContent(country: CountryModel) {
             modifier = Modifier
                 .width(200.dp)
                 .height(390.dp)
-                .padding(8.dp).background(MaterialTheme.colorScheme.surface),
+                .padding(8.dp),
             shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            //colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(4.dp)
         )
         {

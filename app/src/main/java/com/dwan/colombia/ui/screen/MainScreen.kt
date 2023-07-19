@@ -24,7 +24,9 @@ import com.dwan.colombia.ui.theme.ColombiaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    startTrip: (String) -> Unit
+) {
 
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
     val topBarState = rememberSaveable { (mutableStateOf(false)) }
@@ -55,16 +57,6 @@ fun MainScreen() {
             modifier = Modifier.fillMaxSize(),
         ) {
             Scaffold(
-                topBar = {
-                    /*TopAppBar(
-                        title = {
-                                Text(text = "")
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack()})
-                        }
-                    )*/
-                },
                 bottomBar = {
                     if (currentRoute(navController)) {
                         BottomBar(navController = navController)
@@ -73,7 +65,8 @@ fun MainScreen() {
             ) { padding ->
                 Box(Modifier.padding(padding)) {
                     NavigationGraph(
-                        navController = navController
+                        navController = navController,
+                        startTrip
                     )
                 }
             }
@@ -95,6 +88,6 @@ fun currentRoute(navController: NavHostController): Boolean {
 @Composable
 fun GreetingPreview() {
     ColombiaTheme {
-        MainScreen()
+        MainScreen(){}
     }
 }

@@ -32,6 +32,17 @@ coil = "2.0.0"
 ktlint = "11.3.2"
 jacoco = "0.8.8"
 accompanist = "0.31.5-beta"
+wear_material = "1.1.0"
+wear_foundation = "1.1.0"
+wear_tiles = "1.1.0"
+wear_play_services = "18.0.0"
+horologist = "0.4.12"
+wear_datasource = "1.1.1"
+wear = "1.2.0"
+ongoing = "1.0.0"
+org-jetbrains-kotlinx = "1.7.2"
+health_services = "1.0.0-beta03"
+health_connect = "1.0.0-alpha03"
 
 [libraries]
 # Compose
@@ -43,6 +54,7 @@ compose_navigation = { module = "androidx.navigation:navigation-compose", versio
 compose_viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose_viewmodel" }
 compose_activity = { module = "androidx.activity:activity-compose", version.ref = "compose_activity" }
 androidx_material = { module = "androidx.compose.material:material", version.ref = "material" }
+extended_icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "material" }
 compose_material3 = { module = "androidx.compose.material3:material3", version.ref = "compose_material3" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 accompanist = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
@@ -68,6 +80,21 @@ interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 #functional
 ktlint = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
+#Wear
+wear = { module = "androidx.wear:wear", version.ref = "wear" }
+wear_ongoing = { module = "androidx.wear:wear-ongoing", version.ref = "ongoing" }
+wear_play_services = { module = "com.google.android.gms:play-services-wearable", version.ref = "wear_play_services" }
+analytics_play_services = { module = "com.google.android.gms:play-services-analytics", version.ref = "wear_play_services" }
+wear_material = { module = "androidx.wear.compose:compose-material", version.ref = "wear_material" }
+wear_foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wear_foundation" }
+wear_tiles = { module = "androidx.wear.tiles:tiles", version.ref = "wear_tiles" }
+wear_tiles_material = { module = "androidx.wear.tiles:tiles-material", version.ref = "wear_tiles" }
+horologist_tiles = { module = "com.google.android.horologist:horologist-tiles", version.ref = "horologist" }
+horologist_tiles_tools = { module = "com.google.android.horologist:horologist-compose-tools", version.ref = "horologist" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "org-jetbrains-kotlinx" }
+health_services = { module = "androidx.health:health-services-client", version.ref = "health_services" }
+health_connect = { module = "androidx.health:health-connect-client", version.ref = "health_connect" }
+#wear_datasource = { module = "androidx.wear.watchface:watchface-complications-data-source-ktx", version.ref = "wear_datasource" }
 
 
 
@@ -79,7 +106,11 @@ data-module = ["retrofit", "gson", "hilt", "okhttp", "interceptor", "guava"]
 common-module = ["compose_bom", "compose_ui", "compose_tooling", "compose_toolingpreview", "androidx_material", "compose_material3"]
 feature-module = ["compose_bom", "compose_ui", "compose_tooling", "compose_toolingpreview", "compose_navigation",
     "compose_viewmodel", "compose_activity", "androidx_material", "compose_material3", "coil",
-    "hilt", "hilt_navigation","accompanist"]
+    "hilt", "hilt_navigation", "accompanist", "analytics_play_services", "extended_icons", "wear_play_services",
+    "kotlinx-coroutines-play-services", "health_services","health_connect"]
+wear-module = ["wear", "androidx_corektx", "wear_foundation", "compose_bom", "wear_ongoing", "wear_play_services",
+    "wear_material", "compose_activity", "compose_toolingpreview", "wear_tiles", "wear_tiles_material",
+    "kotlinx-coroutines-play-services"]
 
 
 [plugins]
