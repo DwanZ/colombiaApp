@@ -11,29 +11,25 @@ private val DarkColorScheme = darkColorScheme(
     primary = Yellow,
     secondary = Blue,
     tertiary = Color.White,
-    background = labelGrey,
-    onBackground = Color.DarkGray,
-    surface = Color.White,
-    onError = Pink80,
+    background = SurfaceDark,
+    onBackground = OnSurfaceDark,
+    surface = SurfaceDark,
+    onSurface = OnSurfaceDark,
+    onPrimary = Color.Black,
+    onSecondary = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Yellow,
     secondary = Blue,
-    tertiary = Pink40,
-    background = labelGrey,
-    onBackground = Color.DarkGray,
-    surface = Color.White
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
+    tertiary = BlueDark,
+    background = SurfaceLight,
+    onBackground = Color(0xFF1A1C1E),
+    surface = Color.White,
+    onSurface = Color(0xFF1A1C1E),
+    onPrimary = Color.Black,
     onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    surfaceVariant = Color(0xFFEEF1F6)
 )
 
 @Composable
@@ -41,14 +37,9 @@ fun ColombiaTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme =
-        if (useDarkTheme) {
-            DarkColorScheme
-        } else {
-            LightColorScheme
-        }
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (useDarkTheme) DarkColorScheme else LightColorScheme,
+        typography = Typography,
         content = content
     )
 }

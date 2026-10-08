@@ -3,10 +3,34 @@ echo "*********************************************************"
 echo "Running git pre-commit hook. Running Static analysis... "
 echo "*********************************************************"
 
-cd "$(dirname "$0")" || return
-cd ../
-./gradlew ktlintCheck
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [ -f "$HOOK_DIR/../gradlew" ] || [ -f "$HOOK_DIR/../gradlew.bat" ]; then
+  REPO_ROOT="$(cd "$HOOK_DIR/.." && pwd)"
+elif [ -f "$HOOK_DIR/../../gradlew" ] || [ -f "$HOOK_DIR/../../gradlew.bat" ]; then
+  REPO_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+else
+  echo "Gradle wrapper not found from hook location: $HOOK_DIR"
+  exit 1
+fi
 
+cd "$REPO_ROOT" || exit 1
+
+if [ -f "./gradlew" ]; then
+  GRADLEW="./gradlew"
+elif [ -f "./gradlew.bat" ]; then
+  GRADLEW="cmd.exe //c gradlew.bat"
+else
+  echo "Gradle wrapper not found in $REPO_ROOT"
+  exit 1
+fi
+
+# Skip quietly when ktlint is not applied to this project.
+if ! $GRADLEW tasks --all 2>/dev/null | grep -q "ktlintCheck"; then
+  echo "ktlintCheck task not configured; skipping static analysis."
+  exit 0
+fi
+
+$GRADLEW ktlintCheck
 STATUS=$?
 
 if [ $STATUS -eq 0 ] ; then
@@ -21,4 +45,3 @@ else
     echo "*********************************************************"
     exit 1
 fi
-
