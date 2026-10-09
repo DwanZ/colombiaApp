@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,8 +43,9 @@ fun BottomBar(navController: NavHostController) {
 
     Row(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -63,9 +67,9 @@ private fun RowScope.AddItem(
 ) {
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
     val background =
-        if (selected) MaterialTheme.colorScheme.secondary.copy(alpha = 0.75f) else Color.Transparent
+        if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
     val contentColor =
-        if (selected) Color.White else MaterialTheme.colorScheme.onSurface
+        if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier
@@ -88,7 +92,7 @@ private fun RowScope.AddItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Icon(
-                imageVector = screen.icon,
+                imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
                 contentDescription = screen.title,
                 tint = contentColor
             )

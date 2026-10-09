@@ -96,6 +96,8 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideDepartmentRepository(dataSource: DepartmentDataSource): DepartmentRepository =
-        DepartmentRepositoryImpl(dataSource)
+    fun provideDepartmentRepository(
+        dataSource: DepartmentDataSource,
+        attractionDataSource: AttractionDataSource
+    ): DepartmentRepository = DepartmentRepositoryImpl(dataSource, attractionDataSource)
 }

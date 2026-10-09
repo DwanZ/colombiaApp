@@ -1,6 +1,5 @@
 package com.dwan.feature.map
 
-import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,17 +38,9 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style
-import org.maplibre.android.style.layers.FillLayer
-import org.maplibre.android.style.layers.LineLayer
-import org.maplibre.android.style.layers.PropertyFactory
-import org.maplibre.android.style.sources.GeoJsonSource
-import org.maplibre.geojson.Feature
 
-private const val SOURCE_ID = "departments-source"
-private const val FILL_LAYER_ID = "departments-fill"
-private const val LINE_LAYER_ID = "departments-line"
-private const val HIGHLIGHT_SOURCE_ID = "departments-highlight"
-private const val HIGHLIGHT_LAYER_ID = "departments-highlight-fill"
+/** Muted light basemap so Colombia departments read as the highlight. */
+private const val BASEMAP_STYLE_URI = "https://tiles.openfreemap.org/styles/positron"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +76,7 @@ fun MapScreen(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
             ) {
                 DepartmentAttractionsSheet(
-                    departmentName = uiState.selectedDepartment?.name ?: "Department",
+                    department = uiState.selectedDepartment,
                     attractionsState = uiState.attractions,
                     onAttractionClick = onAttractionClick
                 )
@@ -110,40 +102,22 @@ private fun ColombiaMapView(
                         .target(LatLng(4.5709, -74.2973))
                         .zoom(4.6)
                         .build()
-                    map.setStyle(
-                        Style.Builder().fromUri("https://demotiles.maplibre.org/style.json")
-                    ) { style ->
+                    map.setStyle(Style.Builder().fromUri(BASEMAP_STYLE_URI)) { style ->
                         val geoJson = ctx.assets.open("colombia_departments.geojson")
                             .bufferedReader()
                             .use { it.readText() }
-                        style.addSource(GeoJsonSource(SOURCE_ID, geoJson))
-                        style.addLayer(
-                            FillLayer(FILL_LAYER_ID, SOURCE_ID).withProperties(
-                                PropertyFactory.fillColor(AndroidColor.parseColor("#1E88E5")),
-                                PropertyFactory.fillOpacity(0.35f)
-                            )
-                        )
-                        style.addLayer(
-                            LineLayer(LINE_LAYER_ID, SOURCE_ID).withProperties(
-                                PropertyFactory.lineColor(AndroidColor.parseColor("#0D47A1")),
-                                PropertyFactory.lineWidth(1.2f)
-                            )
-                        )
-                        style.addSource(GeoJsonSource(HIGHLIGHT_SOURCE_ID))
-                        style.addLayer(
-                            FillLayer(HIGHLIGHT_LAYER_ID, HIGHLIGHT_SOURCE_ID).withProperties(
-                                PropertyFactory.fillColor(AndroidColor.parseColor("#FABC1E")),
-                                PropertyFactory.fillOpacity(0.55f)
-                            )
-                        )
+                        style.addColombiaFocusLayers(geoJson)
                     }
                     map.addOnMapClickListener { point ->
                         val screen = map.projection.toScreenLocation(point)
-                        val features = map.queryRenderedFeatures(screen, FILL_LAYER_ID)
+                        val features = map.queryRenderedFeatures(
+                            screen,
+                            DEPARTMENTS_FILL_LAYER_ID
+                        )
                         val feature = features.firstOrNull()
                         val name = feature?.getStringProperty("name").orEmpty()
                         if (name.isNotBlank()) {
-                            highlightFeature(map.style, feature)
+                            highlightDepartment(map.style, feature)
                             onDepartmentName(name)
                             true
                         } else {
@@ -155,14 +129,8 @@ private fun ColombiaMapView(
         },
         update = { mapView ->
             mapView.getMapAsync { map ->
-                map.style?.let { style ->
-                    // keep highlight in sync when selection changes externally
-                    if (selectedName.isNullOrBlank()) {
-                        (style.getSource(HIGHLIGHT_SOURCE_ID) as? GeoJsonSource)
-                            ?.setGeoJson(
-                                org.maplibre.geojson.FeatureCollection.fromFeatures(emptyList())
-                            )
-                    }
+                if (selectedName.isNullOrBlank()) {
+                    clearDepartmentHighlight(map.style)
                 }
             }
         },
@@ -172,34 +140,45 @@ private fun ColombiaMapView(
     )
 }
 
-private fun highlightFeature(style: Style?, feature: Feature?) {
-    if (style == null || feature == null) return
-    val source = style.getSource(HIGHLIGHT_SOURCE_ID) as? GeoJsonSource ?: return
-    source.setGeoJson(org.maplibre.geojson.FeatureCollection.fromFeature(feature))
-}
-
 @Composable
 private fun DepartmentAttractionsSheet(
-    departmentName: String,
+    department: com.dwan.domain.model.DepartmentModel?,
     attractionsState: BaseViewState<List<AttractionModel>>?,
     onAttractionClick: (Int) -> Unit
 ) {
     Column(
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 180.dp, max = 480.dp)
+            .heightIn(min = 180.dp, max = 520.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
-            text = departmentName,
+            text = department?.name ?: "Department",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
+        if (department != null) {
+            Text(
+                text = "Population %,d · %,d km²".format(department.population, department.surface),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 2.dp)
+            )
+            if (department.description.isNotBlank()) {
+                Text(
+                    text = department.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
+        }
         Text(
             text = "Touristic places",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
         )
         HorizontalDivider()
         Spacer(Modifier.height(8.dp))
@@ -220,7 +199,11 @@ private fun DepartmentAttractionsSheet(
             )
             is BaseViewState.Success -> {
                 if (attractionsState.data.isEmpty()) {
-                    Text("No touristic attractions found for this department.")
+                    Text(
+                        "No touristic attractions listed for this department yet.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 } else {
                     LazyColumn {
                         items(attractionsState.data, key = { it.id }) { attraction ->
@@ -234,7 +217,8 @@ private fun DepartmentAttractionsSheet(
                                 if (attraction.cityName.isNotBlank()) {
                                     Text(
                                         attraction.cityName,
-                                        style = MaterialTheme.typography.bodySmall
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }

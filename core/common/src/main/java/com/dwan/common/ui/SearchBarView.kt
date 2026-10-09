@@ -27,7 +27,7 @@ fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit) {
     OutlinedTextField(
         value = text,
         onValueChange = { text = it },
-        label = { Text("Search") },
+        placeholder = { Text("Search") },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         singleLine = true,
         modifier = modifier.fillMaxWidth(),

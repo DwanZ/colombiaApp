@@ -1,6 +1,6 @@
 package com.dwan.domain.model
 
-data class AttractionModel (
+data class AttractionModel(
     val cityId: Int,
     val description: String,
     val id: Int,
@@ -8,10 +8,11 @@ data class AttractionModel (
     val latitude: String,
     val longitude: String,
     val name: String,
-    val cityName: String = ""
+    val cityName: String = "",
+    val departmentId: Int = 0
 )
 
-data class AttractionPageModel (
+data class AttractionPageModel(
     val page: Int,
     val pageSize: Int,
     val totalRecords: Int,

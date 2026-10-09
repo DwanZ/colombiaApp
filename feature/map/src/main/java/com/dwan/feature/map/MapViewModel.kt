@@ -38,12 +38,7 @@ class MapViewModel @Inject constructor(
     fun refresh() = loadDepartments()
 
     fun onDepartmentTapped(geoName: String) {
-        val match = departmentCache.firstOrNull {
-            normalize(it.name) == normalize(geoName)
-        } ?: departmentCache.firstOrNull {
-            normalize(it.name).contains(normalize(geoName)) ||
-                normalize(geoName).contains(normalize(it.name))
-        }
+        val match = findDepartment(geoName)
 
         if (match == null) {
             _uiState.update {
@@ -69,6 +64,16 @@ class MapViewModel @Inject constructor(
     fun dismissSheet() {
         _uiState.update {
             it.copy(sheetVisible = false, selectedDepartment = null, attractions = null)
+        }
+    }
+
+    private fun findDepartment(geoName: String): DepartmentModel? {
+        val normalizedGeo = normalize(alias(geoName))
+        return departmentCache.firstOrNull {
+            normalize(it.name) == normalizedGeo
+        } ?: departmentCache.firstOrNull {
+            val apiName = normalize(it.name)
+            apiName.contains(normalizedGeo) || normalizedGeo.contains(apiName)
         }
     }
 
@@ -106,6 +111,13 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    private fun alias(value: String): String {
+        val key = normalize(value)
+        return GEO_ALIASES.entries.firstOrNull { (aliasKey, _) ->
+            key == aliasKey || key.contains(aliasKey) || aliasKey.contains(key)
+        }?.value ?: value
+    }
+
     private fun normalize(value: String): String {
         val decomposed = Normalizer.normalize(value.trim(), Normalizer.Form.NFD)
         return decomposed
@@ -114,8 +126,22 @@ class MapViewModel @Inject constructor(
             .replace("departamento del ", "")
             .replace("departamento de ", "")
             .replace("departamento ", "")
+            .replace("archipielago de ", "")
             .replace("d.c.", "")
-            .replace(".", "")
+            .replace(",", " ")
+            .replace(".", " ")
+            .replace("\\s+".toRegex(), " ")
             .trim()
+    }
+
+    companion object {
+        private val GEO_ALIASES = mapOf(
+            "san andres providencia y santa catalina" to "San Andrés y Providencia",
+            "san andres y providencia" to "San Andrés y Providencia",
+            "bogota" to "Bogotá",
+            "quindio" to "Quindío",
+            "valle del cauca" to "Valle del Cauca",
+            "norte de santander" to "Norte de Santander"
+        )
     }
 }

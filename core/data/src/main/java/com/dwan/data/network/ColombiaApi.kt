@@ -27,6 +27,9 @@ interface ColombiaApi {
     @GET("TouristicAttraction/{id}")
     suspend fun getAttractionDetail(@Path("id") id: Int): AttractionEntity
 
+    @GET("TouristicAttraction")
+    suspend fun getAttractionList(): List<AttractionEntity>
+
     @GET("TouristicAttraction/pagedList")
     suspend fun getAttractionByPage(
         @Query("Page") page: String,

@@ -96,6 +96,7 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.okhttp)
     ksp(libs.hilt.compiler)
 
     debugImplementation(libs.compose.ui.tooling)
