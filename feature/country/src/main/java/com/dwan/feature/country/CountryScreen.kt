@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.dwan.common.BaseViewState
+import com.dwan.common.image.ImagePlaceholderKind
+import com.dwan.common.image.RemoteImage
 import com.dwan.common.ui.ColombiaLoadingView
+import com.dwan.common.ui.DescriptionText
 import com.dwan.common.ui.GenericErrorView
-import com.dwan.common.ui.InformationScrollableBoxView
 import com.dwan.common.ui.LabeledBoxView
+import com.dwan.common.ui.ScrollableTextSection
 import com.dwan.domain.model.CountryModel
 
 @Composable
@@ -60,6 +65,7 @@ fun CountryContent(country: CountryModel) {
         Column(
             Modifier
                 .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .verticalScroll(rememberScrollState())
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(16.dp),
@@ -72,11 +78,12 @@ fun CountryContent(country: CountryModel) {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.height(12.dp))
-            val flagUrl = country.flags.getOrNull(1) ?: country.flags.firstOrNull().orEmpty()
-            AsyncImage(
-                model = flagUrl,
+            val flagUrl = country.flags.getOrNull(1) ?: country.flags.firstOrNull()
+            RemoteImage(
+                url = flagUrl,
                 contentDescription = "${country.name} flag",
                 contentScale = ContentScale.Fit,
+                placeholderKind = ImagePlaceholderKind.Generic,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(140.dp)
@@ -104,7 +111,11 @@ fun CountryContent(country: CountryModel) {
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            InformationScrollableBoxView(text = country.description)
+            if (country.description.length > 600) {
+                ScrollableTextSection(text = country.description)
+            } else {
+                DescriptionText(text = country.description)
+            }
         }
     }
 }

@@ -1,18 +1,19 @@
 package com.dwan.data.source.remote
 
+import com.dwan.common.image.sanitizeImageUrl
 import com.dwan.domain.model.PresidentModel
 
 data class PresidentEntity(
-    val city: CityEntity?,
-    val cityId: Int,
-    val description: String,
-    val endPeriodDate: String?,
-    val id: Int,
-    val image: String,
-    val lastName: String,
-    val name: String,
-    val politicalParty: String,
-    val startPeriodDate: String
+    val city: CityEntity? = null,
+    val cityId: Int = 0,
+    val description: String = "",
+    val endPeriodDate: String? = null,
+    val id: Int = 0,
+    val image: String? = null,
+    val lastName: String = "",
+    val name: String = "",
+    val politicalParty: String = "",
+    val startPeriodDate: String = ""
 )
 
 fun PresidentEntity.toModel() =
@@ -20,9 +21,9 @@ fun PresidentEntity.toModel() =
         city = city?.toModel(),
         cityId = cityId,
         description = description,
-        endPeriodDate = endPeriodDate?:"Vigente",
+        endPeriodDate = endPeriodDate ?: "Vigente",
         id = id,
-        image = image,
+        image = sanitizeImageUrl(image).orEmpty(),
         lastName = lastName,
         name = name,
         politicalParty = politicalParty,

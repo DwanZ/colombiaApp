@@ -16,6 +16,10 @@ class AttractionRemoteDataSource @Inject constructor(
         api.getAttractionDetail(id)
     }
 
+    override suspend fun getAttractionList(): Result<List<AttractionEntity>> = runCatching {
+        api.getAttractionList()
+    }
+
     override suspend fun getAttractionByPage(
         page: String,
         limit: String

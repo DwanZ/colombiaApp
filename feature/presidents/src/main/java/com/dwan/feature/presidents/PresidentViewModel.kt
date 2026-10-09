@@ -31,7 +31,9 @@ class PresidentViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { BaseViewState.Loading }
             repository.getPresidentBySearch(word)
-                .onSuccess { list -> _uiState.update { BaseViewState.Success(list) } }
+                .onSuccess { list ->
+                    _uiState.update { BaseViewState.Success(list.sortedByStartDateDesc()) }
+                }
                 .onFailure {
                     _uiState.update { BaseViewState.Failure("Error retrieving the list") }
                 }
@@ -44,10 +46,15 @@ class PresidentViewModel @Inject constructor(
                 _uiState.update { BaseViewState.Loading }
             }
             repository.getPresidentList()
-                .onSuccess { list -> _uiState.update { BaseViewState.Success(list) } }
+                .onSuccess { list ->
+                    _uiState.update { BaseViewState.Success(list.sortedByStartDateDesc()) }
+                }
                 .onFailure {
                     _uiState.update { BaseViewState.Failure("Error retrieving the list") }
                 }
         }
     }
 }
+
+private fun List<PresidentModel>.sortedByStartDateDesc(): List<PresidentModel> =
+    sortedByDescending { it.startPeriodDate.take(10) }

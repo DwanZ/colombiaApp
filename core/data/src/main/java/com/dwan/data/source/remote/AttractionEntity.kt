@@ -27,7 +27,7 @@ fun AttractionPageEntity.toModel() = AttractionPageModel(
     pageCount = pageCount,
     totalRecords = totalRecords,
     pageSize = pageSize,
-    data = data.map { it.toModel(it.city?.name.orEmpty()) }
+    data = data.map { it.toModel() }
 )
 
 fun AttractionEntity.toModel(cityName: String = "") = AttractionModel(
@@ -38,5 +38,6 @@ fun AttractionEntity.toModel(cityName: String = "") = AttractionModel(
     name = name,
     latitude = latitude,
     longitude = longitude,
-    cityName = cityName.ifBlank { city?.name.orEmpty() }
+    cityName = cityName.ifBlank { city?.name.orEmpty() },
+    departmentId = city?.departamentId ?: 0
 )

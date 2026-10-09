@@ -16,6 +16,7 @@ data class AttractionListUiState(
     val page: Int = 1,
     val pageSize: Int = 10,
     val pageCount: Int = 1,
+    val isSearching: Boolean = false,
     val content: BaseViewState<List<AttractionModel>> = BaseViewState.Loading
 )
 
@@ -31,21 +32,39 @@ class AttractionViewModel @Inject constructor(
         loadPage()
     }
 
-    fun refresh() = loadPage()
+    fun refresh() {
+        if (_uiState.value.isSearching) {
+            // Re-load current page list when not mid-search keyword retained
+            clearSearchAndReload()
+        } else {
+            loadPage()
+        }
+    }
 
-    fun setPage(page: Int) {
-        _uiState.update { it.copy(page = page) }
-        loadPage()
+    fun nextPage() {
+        val state = _uiState.value
+        if (state.page < state.pageCount) {
+            _uiState.update { it.copy(page = it.page + 1, isSearching = false) }
+            loadPage()
+        }
+    }
+
+    fun previousPage() {
+        val state = _uiState.value
+        if (state.page > 1) {
+            _uiState.update { it.copy(page = it.page - 1, isSearching = false) }
+            loadPage()
+        }
     }
 
     fun setPageSize(size: Int) {
-        _uiState.update { it.copy(pageSize = size, page = 1) }
+        _uiState.update { it.copy(pageSize = size, page = 1, isSearching = false) }
         loadPage()
     }
 
     fun search(word: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(content = BaseViewState.Loading) }
+            _uiState.update { it.copy(content = BaseViewState.Loading, isSearching = true) }
             repository.getAttractionBySearch(word)
                 .onSuccess { list ->
                     _uiState.update { it.copy(content = BaseViewState.Success(list)) }
@@ -58,15 +77,20 @@ class AttractionViewModel @Inject constructor(
         }
     }
 
+    private fun clearSearchAndReload() {
+        _uiState.update { it.copy(isSearching = false, page = 1) }
+        loadPage()
+    }
+
     private fun loadPage() {
         viewModelScope.launch {
             val state = _uiState.value
-            _uiState.update { it.copy(content = BaseViewState.Loading) }
+            _uiState.update { it.copy(content = BaseViewState.Loading, isSearching = false) }
             repository.getAttractionByPage(state.page.toString(), state.pageSize.toString())
                 .onSuccess { page ->
                     _uiState.update {
                         it.copy(
-                            pageCount = page.pageCount,
+                            pageCount = page.pageCount.coerceAtLeast(1),
                             content = BaseViewState.Success(page.data)
                         )
                     }

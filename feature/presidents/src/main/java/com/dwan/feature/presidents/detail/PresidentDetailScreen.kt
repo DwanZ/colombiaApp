@@ -1,8 +1,6 @@
 package com.dwan.feature.presidents.detail
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,31 +11,34 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.dwan.common.BaseViewState
+import com.dwan.common.image.ImagePlaceholderKind
+import com.dwan.common.image.RemoteImage
 import com.dwan.common.ui.ColombiaLoadingView
+import com.dwan.common.ui.DescriptionText
 import com.dwan.common.ui.GenericErrorView
-import com.dwan.common.ui.InformationScrollableBoxView
 import com.dwan.common.ui.LabeledBoxView
+import com.dwan.common.ui.ScrollableTextSection
 import com.dwan.domain.model.PresidentModel
 
 @Composable
@@ -56,9 +57,29 @@ fun PresidentDetailScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PresidentDetailContent(president: PresidentModel, onBack: () -> Unit) {
-    Scaffold { padding ->
+    val fullName = "${president.name} ${president.lastName}"
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(fullName, maxLines = 1) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { padding ->
         Column(
             Modifier
                 .padding(padding)
@@ -67,33 +88,49 @@ private fun PresidentDetailContent(president: PresidentModel, onBack: () -> Unit
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.Default.Close, contentDescription = "Close")
-                }
-            }
-            AsyncImage(
-                model = president.image,
-                contentDescription = "${president.name} ${president.lastName}",
+            RemoteImage(
+                url = president.image,
+                contentDescription = fullName,
                 contentScale = ContentScale.Crop,
-                placeholder = rememberVectorPainter(Icons.Default.Person),
-                error = rememberVectorPainter(Icons.Default.Person),
+                placeholderKind = ImagePlaceholderKind.President,
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(160.dp)
                     .clip(CircleShape)
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(16.dp))
             Text(
-                "${president.name} ${president.lastName}",
+                fullName,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-            Text(president.politicalParty, style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(8.dp))
+            Text(
+                president.politicalParty,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(Modifier.height(12.dp))
             LabeledBoxView("Start", president.startPeriodDate.take(10))
-            LabeledBoxView("End", president.endPeriodDate.take(10))
-            HorizontalDivider(Modifier.padding(vertical = 12.dp))
-            InformationScrollableBoxView(president.description)
+            LabeledBoxView(
+                "End",
+                if (president.endPeriodDate.equals("Vigente", ignoreCase = true)) {
+                    "Present"
+                } else {
+                    president.endPeriodDate.take(10)
+                }
+            )
+            HorizontalDivider(Modifier.padding(vertical = 16.dp))
+            Text(
+                "Biography",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(8.dp))
+            if (president.description.length > 600) {
+                ScrollableTextSection(text = president.description)
+            } else {
+                DescriptionText(text = president.description)
+            }
         }
     }
 }
