@@ -7,7 +7,7 @@ Data comes from **[API Colombia](https://api-colombia.com)**, a free public API 
 <p align="center">
   <img src="docs/screenshots/01-country.png" width="200" alt="Country overview" />
   <img src="docs/screenshots/02-map.png" width="200" alt="Department map" />
-  <img src="docs/screenshots/03-attractions.png" width="200" alt="Touristic places" />
+  <img width="200" alt="Screenshot_20261013_145127" src="https://github.com/user-attachments/assets/eeb744d3-0560-4bc1-ad98-862143cf2c53" />
   <img src="docs/screenshots/04-presidents.png" width="200" alt="Presidents list" />
 </p>
 
